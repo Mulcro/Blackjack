@@ -136,154 +136,156 @@ for x in range(52):
 
 game_on = True    
 
-value_table = 0
-value_player = 0
-table = []
+
 
 while game_on == True:
     
-
-    print('BLACKJACK \n \n ')
-    #Initaial card share
-    dealer.deal_two(table)
-    dealer.deal_two(player_1.player_hand)
-   
-    #Stake time
-    print(player_1)
-    player_1.bet()
+    value_table = 0
+    value_player = 0
+    table = []
     
-    stake = player_1.stake
-
-    #show player cards
-
-    print('\nPLAYER')
-    for obj in player_1.player_hand:
-        print(obj)
-    #show dealer first card
-    print('DEALER')
-    print(table[-1])       
-    
-
-    #Value cal
-   
-    for obj in table:
-        value_table += obj.value
-    for obj in player_1.player_hand:
-        value_player += obj.value
-   
-    #Choice
-    options = {'S':'stand','H':'hit'}
-    choice = ''
-    print('\n \nDo you want to stand(S) or hit(H)?\n')
-    
-    while choice not in options.keys():
+    while player_1.player_funds != 0:
         
-        choice = input('Stand(S) or hit(H)?\n')
         
-    if choice == 'H':
-        dealer.deal_card(player_1.player_hand)
+        print('BLACKJACK \n \n ')
+        #Initaial card share
+        dealer.deal_two(table)
+        dealer.deal_two(player_1.player_hand)
+
+        #Stake time
+        print(player_1)
+        player_1.bet()
+
+        stake = player_1.stake
+
+        #show player cards
+
+        print('\nPLAYER')
         for obj in player_1.player_hand:
             print(obj)
-    
-    if choice == 'S':
-        pass
-    #Show dealer second card
-    for obj in table:
-        print(obj)
-    
-    #Dealers hit
-    if value_table < value_player:
-        
-        dealer.add_card(table)
-        
-        print(len(table))
+        #show dealer first card
+        print('DEALER')
+        print(table[-1])       
+
+
+        #Value cal
+
+        for obj in table:
+            value_table += obj.value
+        for obj in player_1.player_hand:
+            value_player += obj.value
+            
+            
+        #Blackjack player
+        if value_player == 21:
+            player_1.winning((stake*2))
+            print('Blackjack')
+
+        #Choice
+        options = {'S':'stand','H':'hit'}
+        choice = ''
+        print('\n \nDo you want to stand(S) or hit(H)?\n')
+
+        while choice not in options.keys():
+
+            choice = input('Stand(S) or hit(H)?\n\n')
+
+        if choice == 'H':
+            dealer.deal_card(player_1.player_hand)
+            value_player += player_1.player_hand[-1].value
+            print('\nPlayer Hand\n')
+            for obj in player_1.player_hand:
+                print(obj)
+
+        if choice == 'S':
+            pass
+        #Show dealer second card
+        print('\nDealer hand\n')
         for obj in table:
             print(obj)
-    
-    #Comparison time
-    
-    if value_table ==21:
         
-        print('Dealer won\nBlackjack')
-    
-    elif value_player == 21:
-        player_1.winning((stake*2))
-        print('Blackjack')
-        
-    elif value_table > 21:
-        player_1.winning((stake*2))
-        
-        print(f'Dealer bust player won {(stake*2)}')
-    
-    elif value_player > 21:
-        
-        
-        print('Player bust dealer wins')
-              
-        
-    elif value_table > value_player:
-        
-        print(f'player lost {(stake)}\nDealer > player')
-   
-    elif value_table < value_player:
-        
-        player_1.winning((stake*2))
-        print(f'Player won {(stake*2)}\nDealer < Player')
-    
-    elif value_table == value_player:
-        print('Draw')
-        player_1.winning((stake))
-        
-    elif player_1.player_funds == 0:
-        
+        #Blackjack table
+        if value_table ==21:
+
+            print('Dealer won\nBlackjack')
+
+        #Dealers hit
+        if value_player < 21 and value_table < value_player:
+            print('\nDealer hand')
+            dealer.deal_card(table)
+            value_table += table[-1].value
+            print(len(table))
+            for obj in table:
+                print(obj)
+
+        #Comparison time
+
+        if value_table > 21:
+            player_1.winning((stake*2))
+
+            print(f'Dealer bust player won {(stake*2)}')
+
+        elif value_player > 21:
+
+
+            print('Player bust dealer wins')
+
+
+        elif value_table > value_player:
+
+            print(f'player lost {(stake)}\nDealer > player')
+
+        elif value_table < value_player:
+
+            player_1.winning((stake*2))
+            print(f'Player won {(stake*2)}\nDealer < Player')
+
+        elif value_table == value_player:
+            print('Draw')
+            player_1.winning((stake))
+
+
+
+        #Continue Game?
+
+        answer = ['Y','N']
+
+        choice2 = []
+
+        while choice2 not in answer:
+
+            choice2 = input('Do you want to play another round?\nYes(Y) of No(N)\n')
+
+        if choice2 == 'Y':
+
+            player_1.clear_hand()
+            table = 0
+            value_player = 0
+            value_table = 0
+
+            continue
+
+        if choice2 == 'N':
+
+            game_on = False
+
+            
+    else:
+        print(player_1)
         print('Game Over\nNo more funds to play with')
-        game_on == False
-    
         
-    
-    #Continue Game?
-    
-    answer = ['Y','N']
-    
-    choice2 = []
-    
-    while choice2 not in answer:
-        
-        choice2 = input('Do you want to play another round?\nYes(Y) of No(N)\n')
-        
-    if choice2 == 'Y':
-        
-        player_1.clear_hand()
-        table = 0
-        value_player = 0
-        value_table = 0
-        
-        continue
-    
-    if choice2 == 'N':
-        
-        game_on == False
-        
-        break
-    
+        game_on = False
+
+
+#Have to add blackjack protocol ace = 11 when with 10 caRD
+#Have to integate the plus 10 protocol
+
     
     
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    
 
 
 
